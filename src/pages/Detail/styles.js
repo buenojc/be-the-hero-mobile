@@ -33,7 +33,6 @@ export default StyleSheet.create({
 
   incidentFieldTitle: {
     textTransform: "uppercase",
-    marginBottom: 10,
     fontSize: 14,
     color: "#41414d",
     textTransform: "uppercase",

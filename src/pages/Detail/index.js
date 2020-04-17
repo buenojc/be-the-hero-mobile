@@ -9,7 +9,7 @@ export default function Incidents() {
   const navigation = useNavigation();
 
   function returnToIncidents() {
-    navigation.navigate("Incidents");
+    navigation.goBack();
   }
 
   return (
