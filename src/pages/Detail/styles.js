@@ -19,6 +19,7 @@ export default StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     marginBottom: 20,
+    borderRadius: 8,
   },
 
   incidentHeader: {
