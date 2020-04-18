@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Linking,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as MailComposer from "expo-mail-composer";
@@ -21,6 +28,10 @@ export default function Incidents() {
       recipients: ["jcbassumpcao@gmail.com"],
       body: message,
     });
+  }
+
+  function sendWhatsapp() {
+    Linking.openURL(`whatsapp://send?phone=+5511985638193&text=${message}`);
   }
 
   return (
@@ -79,10 +90,7 @@ export default function Incidents() {
               <Text style={styles.helpDescription}>Entre em contato:</Text>
 
               <View style={styles.btnContainer}>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={returnToIncidents}
-                >
+                <TouchableOpacity style={styles.btn} onPress={sendWhatsapp}>
                   <Text style={styles.btnText}>Whatsapp</Text>
                 </TouchableOpacity>
 
