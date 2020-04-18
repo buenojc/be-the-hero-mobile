@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, View, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import logoImg from "../../assets/logo.png";
 import styles from "./styles";
+import api from "../../services/api";
 
 export default function Incidents() {
   const navigation = useNavigation();
+  const [incidents, setIncidents] = useState([]);
 
   function navigateToDetail() {
     navigation.navigate("Detail");
   }
+
+  async function listIncidents() {
+    const response = await api.get("incidents");
+    setIncidents(response.data);
+  }
+
+  useEffect(() => {
+    listIncidents();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -28,19 +39,24 @@ export default function Incidents() {
 
       <FlatList
         style={styles.incidentsList}
-        data={[1, 2, 3, 4]}
-        keyExtractor={(incidents) => String(incidents)}
+        data={incidents}
+        keyExtractor={(incident) => String(incident.id)}
         showsVerticalScrollIndicator={false}
-        renderItem={() => (
+        renderItem={({ item: incident }) => (
           <View style={styles.incidents}>
             <Text style={styles.incidentProperty}>Ong:</Text>
-            <Text style={styles.incidentValue}>APAD</Text>
+            <Text style={styles.incidentValue}>{incident.name}</Text>
 
             <Text style={styles.incidentProperty}>Caso:</Text>
-            <Text style={styles.incidentValue}>Cadelinha Atropelada</Text>
+            <Text style={styles.incidentValue}>{incident.title}</Text>
 
             <Text style={styles.incidentProperty}>Valor</Text>
-            <Text style={styles.incidentValue}>R$ 120,00</Text>
+            <Text style={styles.incidentValue}>
+              {Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(incident.value)}
+            </Text>
 
             <TouchableOpacity
               style={styles.detailsButton}
