@@ -8,13 +8,15 @@ import {
   Linking,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import * as MailComposer from "expo-mail-composer";
 import styles from "./styles";
 import logoImg from "../../assets/logo.png";
 
 export default function Incidents() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const incident = route.params.incident;
   const message =
     'Olá APAD, estou entrando em contato pois gostaria de ajudar no caso "Cadelinha Atropelada" com o valor de R$ 120,00';
 
@@ -56,29 +58,28 @@ export default function Incidents() {
                 <View style={styles.incidentOngName}>
                   <Text style={styles.incidentFieldTitle}>Caso:</Text>
                   <Text style={styles.incidentFieldValue}>
-                    Cadelinha atropelada
+                    {incident.title}
                   </Text>
                 </View>
 
                 <View style={styles.incidentTitle}>
                   <Text style={styles.incidentFieldTitle}>ONG:</Text>
-                  <Text style={styles.incidentFieldValue}>APAD</Text>
+                  <Text style={styles.incidentFieldValue}>{incident.name}</Text>
                 </View>
               </View>
 
               <Text style={styles.incidentFieldTitle}>Descrição:</Text>
               <Text style={styles.incidentFieldValue}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in
-                vestibulum quam. Maecenas fermentum sagittis leo, non vestibulum
-                nunc consequat sed. Sed aliquam rutrum enim, id venenatis dui
-                lacinia ut. Praesent suscipit sem non auctor aliquet. Praesent
-                sit amet turpis commodo, tincidunt leo vel, suscipit libero.
-                Mauris ornare velit quis ligula malesuada vulputate. Curabitur
-                id urna est. Maecenas mollis consectetur purus vel vehicula.
+                {incident.description}
               </Text>
 
               <Text style={styles.incidentFieldTitle}>Valor:</Text>
-              <Text style={styles.incidentFieldValue}>R$ 120,00</Text>
+              <Text style={styles.incidentFieldValue}>
+                {Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(incident.value)}
+              </Text>
             </View>
 
             {/* End of Incident Card */}
