@@ -9,14 +9,32 @@ import api from "../../services/api";
 export default function Incidents() {
   const navigation = useNavigation();
   const [incidents, setIncidents] = useState([]);
+  const [cases, setCases] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  function navigateToDetail() {
-    navigation.navigate("Detail");
+  function navigateToDetail(incident) {
+    navigation.navigate("Detail", { incident });
   }
 
   async function listIncidents() {
-    const response = await api.get("incidents");
-    setIncidents(response.data);
+    if (loading) {
+      return;
+    }
+
+    if (loading > 0 && incidents.length === cases) {
+      return;
+    }
+
+    setLoading(true);
+    const response = await api.get("incidents", {
+      params: { page },
+    });
+
+    setIncidents([...incidents, ...response.data]);
+    setCases(response.headers["x-total-count"]);
+    setPage(page + 1);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -28,7 +46,7 @@ export default function Incidents() {
       <View style={styles.header}>
         <Image source={logoImg} />
         <Text style={styles.headerText}>
-          Total de <Text style={styles.headerTextBold}>0 Casos</Text>.
+          Total de <Text style={styles.headerTextBold}>{cases} Casos</Text>.
         </Text>
       </View>
 
@@ -42,6 +60,8 @@ export default function Incidents() {
         data={incidents}
         keyExtractor={(incident) => String(incident.id)}
         showsVerticalScrollIndicator={false}
+        onEndReached={listIncidents}
+        onEndReachedThreshold={0.2}
         renderItem={({ item: incident }) => (
           <View style={styles.incidents}>
             <Text style={styles.incidentProperty}>Ong:</Text>
@@ -60,7 +80,7 @@ export default function Incidents() {
 
             <TouchableOpacity
               style={styles.detailsButton}
-              onPress={navigateToDetail}
+              onPress={() => navigateToDetail(incident)}
             >
               <Text style={styles.detailsButtonText}>Ver mais detalhes</Text>
               <Feather name="arrow-right" size={16} color="#e02041" />
